@@ -58,30 +58,28 @@ function cargarFondo()
 function cargarVacas()
 {
     console.log("vaca " + vaca.cargaOK)
-    dibujar(); //function used by all imgs except fondo
-    vaca.cargaOK = true; //changes flag when dibujar function ends
+    dibujar(vaca); //function used by all imgs except fondo
     console.log("vaca " + vaca.cargaOK)
 };
 
 function cargarCerdos()
 {
     console.log("cerdo " + cerdo.cargaOK)
-    dibujar(); //function used by all imgs except fondo
-    cerdo.cargaOK = true; //changes flag when dibujar function ends
+    dibujar(cerdo); //function used by all imgs except fondo
     console.log("cerdo " + cerdo.cargaOK)
 };
 
 function cargarPollos()
 {
     console.log("pollo " + pollo.cargaOK)
-    dibujar(); //function used by all imgs except fondo
-    pollo.cargaOK = true; //changes flag when dibujar function ends
+    dibujar(pollo); //function used by all imgs except fondo
     console.log("pollo " + pollo.cargaOK)
 };
 
-function dibujar()
+function dibujar(animal)
 {
-    if(fondo.cargaOK) //it uses previous element flag to start
+    //  VACA
+    if(fondo.cargaOK && animal == vaca) //it uses previous element flag to start
     {
         for(var v=0; v < cantidadVaca; v++) // cantidadVaca defines a random amount of img´s loaded
         {   
@@ -92,8 +90,11 @@ function dibujar()
             var y = y * 40; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
             papel.drawImage(vaca.imagen, x, y); //finaly loads the img (x and y values are randomized as seen above)
         };
+        vaca.cargaOK = true; //changes flag when dibujar function ends
     };
-    if(vaca.cargaOK) //it uses previous element flag to start
+
+    //  CERDO
+    if(vaca.cargaOK && animal == cerdo) //it uses previous element flag to start
     {
         for(var v=0; v < cantidadCerdo; v++) 
         {   
@@ -104,8 +105,11 @@ function dibujar()
             var y = y * 40;
             papel.drawImage(cerdo.imagen, x, y); 
         };
+        cerdo.cargaOK = true; //changes flag when dibujar function ends
     };
-    if(cerdo.cargaOK) //it uses previous element flag to start
+
+    //  POLLO
+    if(cerdo.cargaOK && animal == pollo) //it uses previous element flag to start
     {
         for(var v=0; v < cantidadPollo; v++) 
         {   
@@ -116,6 +120,7 @@ function dibujar()
             var y = y * 40;
             papel.drawImage(pollo.imagen, x, y); 
         };
+        pollo.cargaOK = true; //changes flag when dibujar function ends
     };
     
 };
