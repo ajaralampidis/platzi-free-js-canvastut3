@@ -26,11 +26,11 @@ function aleatorio(min, maxi) //random number generator function
     return resultado;
 };
 
-var cantidadVaca = aleatorio(1, 2); //min and max amount of possible cows.
-var cantidadCerdo = aleatorio(1, 2); //min and max amount of possible pigs.
-var cantidadPollo = aleatorio(1, 2); //min and max amount of possible chcikens.
+vaca.cantidad = aleatorio(1, 6); //min and max amount of possible cows.
+cerdo.cantidad = aleatorio(1, 6); //min and max amount of possible pigs.
+pollo.cantidad = aleatorio(1, 6); //min and max amount of possible chcikens.
 
-console.log("Vaca " + cantidadVaca + " Cerdo " + cantidadCerdo + " pollo " + cantidadPollo)
+console.log("Vaca " + vaca.cantidad + " Cerdo " + cerdo.cantidad + " pollo " + pollo.cantidad)
 
 fondo.imagen = new Image(); //Image is a default js class. It creates an <img>. Param not defined (width, height)
 fondo.imagen.src = fondo.url; //referencing the object.property
@@ -38,89 +38,72 @@ fondo.imagen.addEventListener("load", cargarFondo); //When the img is loaded the
 
 vaca.imagen = new Image();
 vaca.imagen.src = vaca.url;
-vaca.imagen.addEventListener("load", cargarVacas);
+vaca.imagen.addEventListener("load", flagVaca);
 
 cerdo.imagen = new Image();
 cerdo.imagen.src = cerdo.url;
-cerdo.imagen.addEventListener("load", cargarCerdos);
+cerdo.imagen.addEventListener("load", flagCerdo);
 
 pollo.imagen = new Image();
 pollo.imagen.src = pollo.url;
-pollo.imagen.addEventListener("load", cargarPollos);
+pollo.imagen.addEventListener("load", flagPollo);
 
 function cargarFondo()
 {   
-    fondo.cargaOK = true; //changes the load flag when dibujar function ends
     console.log("fondo " + fondo.cargaOK)
-    papel.drawImage(fondo.imagen, 0, 0); //drawImage is a default canvas function to load an img
+    fondo.cargaOK = true; //changes the load flag when dibujar function ends
+    dibujar();
+    console.log("fondo " + fondo.cargaOK)
 };
 
-function cargarVacas()
+function flagVaca()
 {
     console.log("vaca " + vaca.cargaOK)
-    dibujar(vaca); //function used by all imgs except fondo
+    vaca.cargaOK = true
+    dibujar();
     console.log("vaca " + vaca.cargaOK)
 };
 
-function cargarCerdos()
+function flagCerdo()
 {
     console.log("cerdo " + cerdo.cargaOK)
-    dibujar(cerdo); //function used by all imgs except fondo
+    cerdo.cargaOK = true
+    dibujar();
     console.log("cerdo " + cerdo.cargaOK)
 };
 
-function cargarPollos()
+function flagPollo()
 {
     console.log("pollo " + pollo.cargaOK)
-    dibujar(pollo); //function used by all imgs except fondo
+    pollo.cargaOK = true
+    dibujar();
     console.log("pollo " + pollo.cargaOK)
 };
 
-function dibujar(animal)
+function dibujar()
 {
-    //  VACA
-    if(fondo.cargaOK && animal == vaca) //it uses previous element flag to start
-    {
-        for(var v=0; v < cantidadVaca; v++) // cantidadVaca defines a random amount of img´s loaded
-        {   
-            console.log(v)
-            var x = aleatorio(0, 7); //random place in x axis
-            var y = aleatorio(0, 10); //random place in y axis 0 is min 10 is max
-            var x = x * 60; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
-            var y = y * 40; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
-            papel.drawImage(vaca.imagen, x, y); //finaly loads the img (x and y values are randomized as seen above)
-        };
-        vaca.cargaOK = true; //changes flag when dibujar function ends
-    };
 
-    //  CERDO
-    if(vaca.cargaOK && animal == cerdo) //it uses previous element flag to start
-    {
-        for(var v=0; v < cantidadCerdo; v++) 
-        {   
-            console.log(v)
-            var x = aleatorio(0, 7);
-            var y = aleatorio(0, 10); 
-            var x = x * 60;
-            var y = y * 40;
-            papel.drawImage(cerdo.imagen, x, y); 
-        };
-        cerdo.cargaOK = true; //changes flag when dibujar function ends
-    };
+    if (fondo.cargaOK) {
+        papel.drawImage(fondo.imagen, 0, 0); //drawImage is a default canvas function to load an img
+    }
+    if (vaca.cargaOK) {
+        dibujarAnimal(vaca);
+    }
+    if (cerdo.cargaOK) {
+        dibujarAnimal(cerdo);
+    }
+    if (pollo.cargaOK) {
+        dibujarAnimal(pollo);
+    }
+}
 
-    //  POLLO
-    if(cerdo.cargaOK && animal == pollo) //it uses previous element flag to start
-    {
-        for(var v=0; v < cantidadPollo; v++) 
-        {   
-            console.log(v)
-            var x = aleatorio(0, 7);
-            var y = aleatorio(0, 10); 
-            var x = x * 60;
-            var y = y * 40;
-            papel.drawImage(pollo.imagen, x, y); 
-        };
-        pollo.cargaOK = true; //changes flag when dibujar function ends
-    };
-    
-};
+function dibujarAnimal(animal){
+    for(var i=0; i < animal.cantidad; i++) // cantidadVaca defines a random amount of img´s loaded
+    {   
+        var x = aleatorio(0, 7); //random place in x axis
+        var y = aleatorio(0, 10); //random place in y axis 0 is min 10 is max
+        var x = x * 60; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
+        var y = y * 40; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
+        papel.drawImage(animal.imagen, x, y); //finaly loads the img (x and y values are randomized as seen above)
+    }
+}
