@@ -4,19 +4,23 @@ var papel = mainCanvas.getContext("2d"); //gets context from canvas
 //Objects for the images
 var fondo = {  
     url: "tile.png",
-    cargaOK: false
+    cargaOK: false,
+    name: fondo
 };
 var vaca = {
     url: "vaca.png",
-    cargaOK: false
+    cargaOK: false,
+    name: "vaca"
 };
 var cerdo = {
     url: "cerdo.png",
-    cargaOK: false
+    cargaOK: false,
+    name: "cerdo"
 };
 var pollo = {
     url: "pollo.png",
-    cargaOK: false
+    cargaOK: false,
+    name: "pollo"
 };
 
 function aleatorio(min, maxi) //random number generator function
@@ -28,7 +32,6 @@ function aleatorio(min, maxi) //random number generator function
 
 vaca.cantidad = aleatorio(1, 6); //min and max amount of possible cows.
 cerdo.cantidad = aleatorio(1, 6); //min and max amount of possible pigs.
-pollo.cantidad = aleatorio(1, 6); //min and max amount of possible chcikens.
 
 console.log("Vaca " + vaca.cantidad + " Cerdo " + cerdo.cantidad + " pollo " + pollo.cantidad)
 
@@ -76,34 +79,64 @@ function flagPollo()
 {
     console.log("pollo " + pollo.cargaOK)
     pollo.cargaOK = true
-    dibujar();
+    dibujarAnimalInteractivo(pollo);
     console.log("pollo " + pollo.cargaOK)
 };
 
 function dibujar()
 {
-
     if (fondo.cargaOK) {
         papel.drawImage(fondo.imagen, 0, 0); //drawImage is a default canvas function to load an img
     }
+
     if (vaca.cargaOK) {
         dibujarAnimal(vaca);
     }
+
     if (cerdo.cargaOK) {
         dibujarAnimal(cerdo);
     }
-    if (pollo.cargaOK) {
-        dibujarAnimal(pollo);
-    }
 }
 
+var registroAnimales = {};
+
 function dibujarAnimal(animal){
-    for(var i=0; i < animal.cantidad; i++) // cantidadVaca defines a random amount of img´s loaded
+    for(var i=0; i < animal.cantidad; i++) // animal.cantidad defines a random amount of img´s loaded
     {   
+        var nombre = animal.name;
         var x = aleatorio(0, 7); //random place in x axis
         var y = aleatorio(0, 10); //random place in y axis 0 is min 10 is max
         var x = x * 60; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
         var y = y * 40; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
+
+
+        registroAnimales [nombre + i] = {"posx":x, "posy":y}
+
+
         papel.drawImage(animal.imagen, x, y); //finaly loads the img (x and y values are randomized as seen above)
     }
 }
+var xi = 250-40;
+var yi = 250-40;
+function dibujarAnimalInteractivo(animal){
+    papel.drawImage(animal.imagen, xi, yi);
+}
+
+document.addEventListener("keydown", moveAnimal)
+function moveAnimal(event)
+{
+    if (event.keyCode == 40) { //down
+        yi += 10;
+    }
+    if (event.keyCode == 38) { //up
+        yi -= 10;
+    }
+    if (event.keyCode == 37) { //left
+        xi -= 10;
+    }
+    if (event.keyCode == 39) { //right
+        xi += 10;
+    }
+    dibujarAnimalInteractivo(pollo);
+}
+console.log(registroAnimales)
