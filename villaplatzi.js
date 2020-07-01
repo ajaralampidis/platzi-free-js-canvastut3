@@ -110,12 +110,27 @@ function dibujarAnimal(animal){
         var y = y * 40; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
 
 
-        registroAnimales [nombre + i] = {"posx":x, "posy":y}
+        registroAnimales[nombre + i] = {"posx":x, "posy":y, "type":animal}
 
 
         papel.drawImage(animal.imagen, x, y); //finaly loads the img (x and y values are randomized as seen above)
     }
 }
+
+function drawStored(){
+
+    papel.drawImage(fondo.imagen, 0, 0);
+
+    for (let anim in registroAnimales) {
+        var storedAnimal = registroAnimales[anim]["type"];
+        var storedX = registroAnimales[anim]["posx"];
+        var storedY = registroAnimales[anim]["posy"];
+        papel.drawImage(storedAnimal.imagen, storedX, storedY);
+    }
+}
+
+
+
 var xi = 250-40;
 var yi = 250-40;
 function dibujarAnimalInteractivo(animal){
@@ -137,6 +152,7 @@ function moveAnimal(event)
     if (event.keyCode == 39) { //right
         xi += 10;
     }
+    drawStored();
     dibujarAnimalInteractivo(pollo);
 }
 console.log(registroAnimales)
