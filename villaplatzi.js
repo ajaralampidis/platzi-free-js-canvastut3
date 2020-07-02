@@ -1,27 +1,54 @@
+/***************/
+/*  VARIABLES  */
+/***************/
+
 var mainCanvas = document.getElementById("villaplatzi"); //selects main canvas (the only canvas)
 var papel = mainCanvas.getContext("2d"); //gets context from canvas
 
-//Objects for the images
-var fondo = {  
+// moving object position
+var xi = 250-40;
+var yi = 250-40;
+
+/**************/
+/*  OBJETOS   */
+/**************/
+var fondo = 
+{  
     url: "tile.png",
     cargaOK: false,
     name: fondo
 };
-var vaca = {
+var vaca = 
+{
     url: "vaca.png",
     cargaOK: false,
     name: "vaca"
 };
-var cerdo = {
+var cerdo = 
+{
     url: "cerdo.png",
     cargaOK: false,
     name: "cerdo"
 };
-var pollo = {
+var pollo = 
+{
     url: "pollo.png",
     cargaOK: false,
     name: "pollo"
 };
+
+var interactivo = 
+{
+    url: "interactivo.png",
+    cargaOK: false,
+    name: "interactivo"
+};
+
+var registroAnimales = {};
+
+/**************/
+/* FUNCIONES  */
+/**************/
 
 function aleatorio(min, maxi) //random number generator function
 {
@@ -29,32 +56,10 @@ function aleatorio(min, maxi) //random number generator function
     resultado = Math.floor(Math.random() * (maxi - min + 1)) + min;
     return resultado;
 };
-
-vaca.cantidad = aleatorio(1, 6); //min and max amount of possible cows.
-cerdo.cantidad = aleatorio(1, 6); //min and max amount of possible pigs.
-
-console.log("Vaca " + vaca.cantidad + " Cerdo " + cerdo.cantidad + " pollo " + pollo.cantidad)
-
-fondo.imagen = new Image(); //Image is a default js class. It creates an <img>. Param not defined (width, height)
-fondo.imagen.src = fondo.url; //referencing the object.property
-fondo.imagen.addEventListener("load", cargarFondo); //When the img is loaded the display function is invoked
-
-vaca.imagen = new Image();
-vaca.imagen.src = vaca.url;
-vaca.imagen.addEventListener("load", flagVaca);
-
-cerdo.imagen = new Image();
-cerdo.imagen.src = cerdo.url;
-cerdo.imagen.addEventListener("load", flagCerdo);
-
-pollo.imagen = new Image();
-pollo.imagen.src = pollo.url;
-pollo.imagen.addEventListener("load", flagPollo);
-
-function cargarFondo()
+function cargarFondo() // change flag and draw the object
 {   
     console.log("fondo " + fondo.cargaOK)
-    fondo.cargaOK = true; //changes the load flag when dibujar function ends
+    fondo.cargaOK = true; 
     dibujar();
     console.log("fondo " + fondo.cargaOK)
 };
@@ -79,66 +84,72 @@ function flagPollo()
 {
     console.log("pollo " + pollo.cargaOK)
     pollo.cargaOK = true
-    dibujarAnimalInteractivo(pollo);
+    dibujar();
     console.log("pollo " + pollo.cargaOK)
 };
 
-function dibujar()
+function flagInteractivo()
 {
-    if (fondo.cargaOK) {
-        papel.drawImage(fondo.imagen, 0, 0); //drawImage is a default canvas function to load an img
-    }
+    interactivo.cargaOK = true
+    dibujarAnimalInteractivo(interactivo);
+};
 
-    if (vaca.cargaOK) {
-        dibujarAnimal(vaca);
-    }
-
-    if (cerdo.cargaOK) {
-        dibujarAnimal(cerdo);
-    }
-}
-
-var registroAnimales = {};
-
-function dibujarAnimal(animal){
-    for(var i=0; i < animal.cantidad; i++) // animal.cantidad defines a random amount of img´s loaded
+function dibujarAnimal(animal)
+{
+    for(var i=0; i < animal.cantidad; i++) // animal.cantidad is a random number
     {   
         var nombre = animal.name;
         var x = aleatorio(0, 7); //random place in x axis
         var y = aleatorio(0, 10); //random place in y axis 0 is min 10 is max
         var x = x * 60; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
         var y = y * 40; // this creates a grid so that imgs are not overlaped (varx max value*const <= canvas x size)
-
-
-        registroAnimales[nombre + i] = {"posx":x, "posy":y, "type":animal}
-
-
+        registroAnimales[nombre + i] = {"posx":x, "posy":y, "type":animal} // stores the position and type of each animal drawn
         papel.drawImage(animal.imagen, x, y); //finaly loads the img (x and y values are randomized as seen above)
     }
 }
 
-function drawStored(){
+function dibujar() // draw the canvas for the first time
+{
+    if (fondo.cargaOK)
+    {
+        papel.drawImage(fondo.imagen, 0, 0);
+    }
 
+    if (vaca.cargaOK)
+    {
+        dibujarAnimal(vaca);
+    }
+
+    if (cerdo.cargaOK)
+    {
+        dibujarAnimal(cerdo);
+    }
+
+    if (pollo.cargaOK)
+    {
+        dibujarAnimal(pollo);
+    }
+}
+
+function drawStored() // Draw the image when chicken is moved to clean the previous one.
+{
     papel.drawImage(fondo.imagen, 0, 0);
 
-    for (let anim in registroAnimales) {
-        var storedAnimal = registroAnimales[anim]["type"];
-        var storedX = registroAnimales[anim]["posx"];
-        var storedY = registroAnimales[anim]["posy"];
+    for (let animal in registroAnimales)
+    {
+        var storedAnimal = registroAnimales[animal]["type"];
+        var storedX = registroAnimales[animal]["posx"];
+        var storedY = registroAnimales[animal]["posy"];
         papel.drawImage(storedAnimal.imagen, storedX, storedY);
     }
 }
 
-
-
-var xi = 250-40;
-var yi = 250-40;
-function dibujarAnimalInteractivo(animal){
+function dibujarAnimalInteractivo(animal) // Draw the chcicken
+{
     papel.drawImage(animal.imagen, xi, yi);
 }
 
-document.addEventListener("keydown", moveAnimal)
-function moveAnimal(event)
+function moveAnimal(event)  // change chicken position with arrow keys. 
 {
     if (event.keyCode == 40) { //down
         yi += 10;
@@ -153,6 +164,39 @@ function moveAnimal(event)
         xi += 10;
     }
     drawStored();
-    dibujarAnimalInteractivo(pollo);
+    dibujarAnimalInteractivo(interactivo);
 }
-console.log(registroAnimales)
+
+/*****************/
+/*  "The Code"   */
+/*****************/
+
+vaca.cantidad = aleatorio(1, 6); //min and max (random) amount of cows. This stores the value in the animal object
+cerdo.cantidad = aleatorio(1, 6); //min and max (random) amount of pigs. This stores the value in the animal object
+pollo.cantidad = aleatorio(1, 6); //min and max (random) amount of chickens. This stores the value in the animal object
+
+console.log("Vaca " + vaca.cantidad + " Cerdo " + cerdo.cantidad + " pollo " + pollo.cantidad); 
+
+fondo.imagen = new Image(); 
+fondo.imagen.src = fondo.url;
+fondo.imagen.addEventListener("load", cargarFondo); // Waits for the img to load. Then the function is invoked
+
+vaca.imagen = new Image();
+vaca.imagen.src = vaca.url;
+vaca.imagen.addEventListener("load", flagVaca);
+
+cerdo.imagen = new Image();
+cerdo.imagen.src = cerdo.url;
+cerdo.imagen.addEventListener("load", flagCerdo);
+
+pollo.imagen = new Image();
+pollo.imagen.src = pollo.url;
+pollo.imagen.addEventListener("load", flagPollo);
+
+interactivo.imagen = new Image();
+interactivo.imagen.src = interactivo.url;
+interactivo.imagen.addEventListener("load", flagInteractivo);
+
+
+document.addEventListener("keydown", moveAnimal)  // Moves the chicken when arrowkeys are pressed
+
